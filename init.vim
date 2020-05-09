@@ -5,9 +5,6 @@ set shiftwidth=4
 set copyindent
 :nmap <silent> <C-k> :NERDTreeToggle<CR>
 call plug#begin()
-Plug 'thecodesmith/vim-groovy', {'for': 'kotlin'}
-Plug 'udalov/kotlin-vim', {'for': 'kotlin'}
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'junegunn/fzf'
