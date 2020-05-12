@@ -5,12 +5,15 @@ set shiftwidth=4
 set copyindent
 :nmap <silent> <C-k> :NERDTreeToggle<CR>
 call plug#begin()
+Plug 'thecodesmith/vim-groovy', {'for': 'kotlin'}
+Plug 'udalov/kotlin-vim', {'for': 'kotlin'}
 Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-commentary'
-
+Plug 'relastle/bluewery.vim'
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 call plug#end()
 
 "FZF"
@@ -21,3 +24,7 @@ map <C-g> <Esc><Esc>:BCommits!<CR>
 "Line numbers
 :set number relativenumber
 :set nu rnu
+
+"Theme
+colorscheme bluewery-light
+let g:lightline = { 'colorscheme': 'bluewery_light' }
