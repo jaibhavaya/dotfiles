@@ -14,6 +14,8 @@ Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-commentary'
 Plug 'relastle/bluewery.vim'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'BurntSushi/ripgrep'
+Plug 'mileszs/ack.vim'
 call plug#end()
 
 "FZF"
@@ -28,3 +30,11 @@ map <C-g> <Esc><Esc>:BCommits!<CR>
 "Theme
 colorscheme bluewery-light
 let g:lightline = { 'colorscheme': 'bluewery_light' }
+
+" Prefer rg > ag > ack
+if executable('rg')
+    let g:ackprg = 'rg -S --no-heading --vimgrep'
+elseif executable('ag')
+    let g:ackprg = 'ag --vimgrep'
+endif
+nnoremap \ :Ack<SPACE>
