@@ -1,14 +1,10 @@
-set nocompatible              " Required for Vundle
-filetype off                  " Required
-
-" Set the runtime path to include Vundle and initialize
+" Vundle stuff
+set nocompatible
+filetype off
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
-" Let Vundle manage Vundle (required)
 Plugin 'VundleVim/Vundle.vim'
-
-" Plugins
 Plugin 'vim-ruby/vim-ruby'
 Plugin 'tpope/vim-rails'
 Plugin 'tpope/vim-fugitive'
@@ -20,13 +16,11 @@ Plugin 'Shougo/neocomplete.vim'
 Plugin 'tpope/vim-commentary'
 Plugin 'mhartington/oceanic-next'
 
-call vundle#end()                  " Required
-filetype plugin indent on          " Required
+call vundle#end()
+filetype plugin indent on
 
 " Theme
  syntax enable
-" for vim 7
- set t_Co=256
 
 " for vim 8
  if (has("termguicolors"))
@@ -35,12 +29,11 @@ filetype plugin indent on          " Required
 
 colorscheme OceanicNext
 
+
 " Basic settings
 set number
 set hlsearch
 syntax on
-autocmd FileType ruby setlocal expandtab shiftwidth=2 tabstop=2
-autocmd FileType eruby setlocal expandtab shiftwidth=2 tabstop=2
 
 " Key mappings
 map - :NERDTreeToggle<CR>          " Toggle NERDTree
@@ -52,5 +45,8 @@ nnoremap <leader>r :source /tmp/vim_session.vim<CR>
 
 " Commenting
 noremap \ :Commentary<CR>
-autocmd FileType ruby setlocal commentstring=#\ %s
 
+" Ruby
+autocmd FileType ruby setlocal expandtab shiftwidth=2 tabstop=2
+autocmd FileType eruby setlocal expandtab shiftwidth=2 tabstop=2
+autocmd FileType ruby setlocal commentstring=#\ %s
