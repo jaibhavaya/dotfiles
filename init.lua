@@ -1,4 +1,3 @@
-vim.cmd('source ~/.vimrc')
 -- Ensure Packer is installed
 local ensure_packer = function()
   local fn = vim.fn
@@ -8,86 +7,107 @@ local ensure_packer = function()
     vim.cmd [[packadd packer.nvim]]
     return true
   end
-
   return false
 end
 
 local packer_bootstrap = ensure_packer()
 
--- Initialize Packer
+-- Initialize Packer and Plugins
 require('packer').startup(function(use)
-  use 'wbthomason/packer.nvim' -- Packer can manage itself
+  use 'wbthomason/packer.nvim' -- Packer manages itself
+  use 'tpope/vim-sensible'
+  use 'vim-ruby/vim-ruby'
+  use 'tpope/vim-rails'
+  use 'tpope/vim-fugitive'
+  use 'junegunn/fzf'
+  use 'junegunn/fzf.vim'
+  use 'preservim/nerdtree'
+  use 'christoomey/vim-tmux-navigator'
+  use 'tpope/vim-commentary'
+  use 'mhartington/oceanic-next'
+  use { 'neoclide/coc.nvim', branch = 'release' }
 
   if packer_bootstrap then
     require('packer').sync()
   end
 end)
 
--- Function to create a React component
-local function create_react_component(name)
-  local component_name = name or "MyComponent"
-  local file_name = component_name .. ".tsx"
+-- Basic Settings
+vim.o.number = true -- Line numbers
+vim.o.hlsearch = true -- Highlight search
+vim.o.termguicolors = true -- Enable 24-bit RGB colors
+vim.cmd('colorscheme OceanicNext') -- Theme
 
-  local current_dir = vim.fn.expand("%:p:h")
-  local file_path = current_dir .. "/" .. file_name
+-- Key Mappings
+vim.api.nvim_set_keymap('n', '-', ':NERDTreeToggle<CR>', { noremap = true, silent = true }) -- Toggle NERDTree
+vim.api.nvim_set_keymap('n', '<S-CR>', ':FZF<CR>', { noremap = true, silent = true }) -- Open FZF
+vim.api.nvim_set_keymap('n', '<leader>m', ':mksession! /tmp/vim_session.vim<CR><C-w>o', { noremap = true, silent = true }) -- Save session
+vim.api.nvim_set_keymap('n', '<leader>r', ':source /tmp/vim_session.vim<CR>', { noremap = true, silent = true }) -- Reload session
+vim.api.nvim_set_keymap('n', '<leader>\\', ':Commentary<CR>', { noremap = true, silent = true }) -- Commenting
+vim.api.nvim_set_keymap('n', '<leader>c', ':w !pbcopy<CR>', { noremap = true, silent = true }) -- Copy buffer to clipboard
+vim.api.nvim_set_keymap('v', '<leader>c', ':w !pbcopy<CR>', { noremap = true, silent = true }) -- Copy buffer to clipboard
 
-  if vim.fn.filereadable(file_path) == 1 then
-    vim.api.nvim_err_writeln("File " .. file_name .. " already exists!")
-    return
-  end
+-- Language-Specific Settings
 
-  local boilerplate = {
-    "import React from 'react';",
-    "",
-    "const " .. component_name .. " = () => {",
-    "  console.log('in component');",
-    "  return (",
-    "    <div>Hello World</div>",
-    "  );",
-    "};",
-    "",
-    "export default " .. component_name .. ";",
-  }
+-- Ruby
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'ruby', 'eruby' },
+  callback = function()
+    vim.opt_local.expandtab = true
+    vim.opt_local.shiftwidth = 2
+    vim.opt_local.tabstop = 2
+    vim.opt_local.commentstring = '# %s'
+  end,
+})
 
-  vim.fn.writefile(boilerplate, file_path)
+-- TypeScript
+vim.g.coc_global_extensions = { 'coc-tsserver' }
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'typescript',
+  callback = function()
+    vim.opt_local.expandtab = true
+    vim.opt_local.shiftwidth = 2
+    vim.opt_local.tabstop = 2
+  end,
+})
 
-  vim.cmd("edit " .. file_path)
-end
+-- Coc Key Bindings
+vim.api.nvim_set_keymap('n', '<leader>ac', '<Plug>(coc-codeaction)', { noremap = false, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>qf', '<Plug>(coc-fix-current)', { noremap = false, silent = true })
+vim.api.nvim_set_keymap('n', 'gd', '<Plug>(coc-definition)', { noremap = false, silent = true })
+vim.api.nvim_set_keymap('n', 'gy', '<Plug>(coc-type-definition)', { noremap = false, silent = true })
+vim.api.nvim_set_keymap('n', 'gi', '<Plug>(coc-implementation)', { noremap = false, silent = true })
+vim.api.nvim_set_keymap('n', 'gr', '<Plug>(coc-references)', { noremap = false, silent = true })
 
--- Define the `:Rc` command in Neovim
-vim.api.nvim_create_user_command("Rc", function(opts)
-  create_react_component(opts.args)
-end, { nargs = "?" })
-
-
--- Set tab width to 2 spaces
-vim.o.tabstop = 2       -- A tab is displayed as 2 spaces
-vim.o.shiftwidth = 2    -- Indentation uses 2 spaces
-vim.o.expandtab = true  -- Convert tabs to spaces
-
-vim.api.nvim_set_keymap('i', '<Esc>', 'pumvisible() ? "\\<C-e>\\<Esc>" : "\\<Esc>"', { noremap = true, expr = true })
-
-vim.api.nvim_create_user_command("EInit", function()
-  vim.cmd("edit ~/.config/nvim/init.lua")
-end, {})
-
-vim.api.nvim_set_keymap("n", "<C-S-f>", ":Rg<CR>", { noremap = true, silent = true })
-
--- Map Ctrl-S to save in normal mode
-vim.api.nvim_set_keymap("n", "<C-s>", ":w<CR>", { noremap = true, silent = true })
--- Map Ctrl-S to save in insert mode
-vim.api.nvim_set_keymap("i", "<C-s>", "<Esc>:w<CR>i", { noremap = true, silent = true })
-
+-- Coc Completion Menu
 vim.api.nvim_set_keymap(
-  "i",
-  "<CR>",
-  [[pumvisible() ? coc#pum#confirm() : "\<CR>"]],
+  'i',
+  '<Tab>',
+  'pumvisible() ? "\\<C-n>" : "\\<Tab>"',
+  { noremap = true, expr = true, silent = true }
+)
+vim.api.nvim_set_keymap(
+  'i',
+  '<S-Tab>',
+  'pumvisible() ? "\\<C-p>" : "\\<S-Tab>"',
+  { noremap = true, expr = true, silent = true }
+)
+vim.api.nvim_set_keymap(
+  'i',
+  '<CR>',
+  'pumvisible() ? coc#pum#confirm() : "\\<CR>"',
+  { noremap = true, expr = true, silent = true }
+)
+vim.api.nvim_set_keymap(
+  'i',
+  '<Esc>',
+  'pumvisible() ? coc#pum#cancel() : "\\<Esc>"',
   { noremap = true, expr = true, silent = true }
 )
 
--- FZF Configuration for custom actions
+-- FZF Configuration
 vim.g.fzf_action = {
-  ['ctrl-t'] = 'tabedit',      -- Open in a new tab
-  ['ctrl-x'] = 'split',       -- Open in a horizontal split
-  ['ctrl-v'] = 'vsplit',      -- Open in a vertical split
+  ['ctrl-t'] = 'tabedit',
+  ['ctrl-x'] = 'split',
+  ['ctrl-v'] = 'vsplit',
 }
