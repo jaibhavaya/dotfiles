@@ -1,0 +1,5 @@
+{
+  "keymap.confirm": "<CR>",
+  "typescript.suggest.autoImports": true,
+  "typescript.preferences.importModuleSpecifier": "shortest"
+}
