@@ -1,0 +1,33 @@
+{
+  "keymap.confirm": "<CR>",
+  "pairs.enableCharacters": ["(", "{", "[", "\"", "'", "`"],
+  "pairs.disableInComments": true,
+  "pairs.enableBackspace": true,
+	// typescript
+  "typescript.suggest.autoImports": true,
+  "coc.preferences.formatOnSaveFiletypes": ["typescript", "typescriptreact"],
+  "eslint.autoFixOnSave": true,
+  "eslint.enable": true,
+  "eslint.filetypes": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+  "typescript.preferences": {
+    "importModuleSpecifier": "non-relative",
+    "importModuleSpecifierEnding": "minimal",
+    "quotePreference": "double",
+    "includeCompletionsWithInsertText": true,
+    "includeAutomaticOptionalChainCompletions": true
+  },
+  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": true,
+
+	// ruby
+  "solargraph.useBundler": false,
+  "solargraph.diagnostics": true,
+  "solargraph.formatting": true,
+  "solargraph.completion": true,
+  "solargraph.hover": true,
+  "solargraph.symbols": true,
+  "solargraph.definition": true,
+  "solargraph.references": true,
+  "solargraph.rename": true,
+  "solargraph.transport": "stdio",
+  "snippets.ultisnips.pythonPrompt": false
+}

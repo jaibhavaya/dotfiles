@@ -1,0 +1,79 @@
+" Vundle stuff
+set nocompatible
+filetype off
+set rtp+=~/.vim/bundle/Vundle.vim
+
+call plug#begin()
+" List your plugins here
+Plug 'tpope/vim-sensible'
+Plug 'vim-ruby/vim-ruby'
+Plug 'tpope/vim-rails'
+Plug 'tpope/vim-fugitive'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+Plug 'preservim/nerdtree'
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'tpope/vim-commentary'
+Plug 'mhartington/oceanic-next'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+call plug#end()
+
+filetype plugin indent on
+
+" Theme
+syntax enable
+
+" for vim 8
+ if (has("termguicolors"))
+  set termguicolors
+ endif
+
+colorscheme OceanicNext
+
+
+" Basic settings
+set number
+set hlsearch
+syntax on
+
+" Key mappings
+map - :NERDTreeToggle<CR>          " Toggle NERDTree
+nnoremap <silent> <S-CR> :FZF<CR>
+
+" Maximizing/resetting panels
+nnoremap <leader>m :mksession! /tmp/vim_session.vim<CR><C-w>o
+nnoremap <leader>r :source /tmp/vim_session.vim<CR>
+
+" Commenting
+noremap <leader>\ :Commentary<CR>
+
+" Ruby
+autocmd FileType ruby setlocal expandtab shiftwidth=2 tabstop=2
+autocmd FileType eruby setlocal expandtab shiftwidth=2 tabstop=2
+autocmd FileType ruby setlocal commentstring=#\ %s
+
+" Typescript
+let g:coc_global_extensions = ['coc-tsserver']
+autocmd FileType typescript setlocal expandtab shiftwidth=2 tabstop=2
+" Remap keys for applying codeAction to the current line.
+nmap <leader>ac  <Plug>(coc-codeaction)
+" Apply AutoFix to problem on the current line.
+nmap <leader>qf  <Plug>(coc-fix-current)
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use Tab to navigate the completion menu
+inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+" Confirm the selection with Enter
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
+
+" Cancel the menu with Esc
+inoremap <silent><expr> <Esc> coc#pum#visible() ? coc#pum#cancel() : "\<Esc>"
+
+noremap <leader>c :w !pbcopy<CR>

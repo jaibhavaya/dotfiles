@@ -1,3 +1,8 @@
+-- Tabs
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.softtabstop = 2
+
 -- Ensure Packer is installed
 local ensure_packer = function()
   local fn = vim.fn
@@ -14,7 +19,7 @@ local packer_bootstrap = ensure_packer()
 
 -- Initialize Packer and Plugins
 require('packer').startup(function(use)
-  use 'wbthomason/packer.nvim' -- Packer manages itself
+	use 'wbthomason/packer.nvim' -- Packer manages itself
   use 'tpope/vim-sensible'
   use 'vim-ruby/vim-ruby'
   use 'tpope/vim-rails'
@@ -24,7 +29,9 @@ require('packer').startup(function(use)
   use 'preservim/nerdtree'
   use 'christoomey/vim-tmux-navigator'
   use 'tpope/vim-commentary'
-  use 'mhartington/oceanic-next'
+  use 'sainnhe/everforest'
+  use 'morhetz/gruvbox'
+	use "tpope/vim-endwise"
   use { 'neoclide/coc.nvim', branch = 'release' }
 
   if packer_bootstrap then
@@ -32,46 +39,48 @@ require('packer').startup(function(use)
   end
 end)
 
+-- Detect the current directory and set the colorscheme accordingly
+local cwd = vim.fn.getcwd()
+
+if cwd:match("boost%-client") then
+  -- Enable termguicolors if available
+  if vim.fn.has("termguicolors") == 1 then
+    vim.opt.termguicolors = true
+  end
+
+  -- Set background to dark or light
+  vim.opt.background = "dark" -- Use "light" for light version
+
+  -- Set contrast for Everforest
+  -- Available values: 'hard', 'medium' (default), 'soft'
+  vim.g.everforest_background = "hard"
+
+  -- Enable better performance for Everforest
+  vim.g.everforest_better_performance = 1
+  -- Apply the Everforest colorscheme
+  vim.cmd("colorscheme everforest")
+else
+  -- Set the background to light
+  vim.opt.background = "dark"
+
+  -- Customize Gruvbox options
+  vim.g.gruvbox_contrast_light = "hard" -- Available values: 'hard', 'medium', 'soft' (default)
+  vim.g.gruvbox_invert_selection = false -- Prevents inverted selection for better readability
+  vim.cmd("colorscheme gruvbox")
+end
+
 -- Basic Settings
 vim.o.number = true -- Line numbers
 vim.o.hlsearch = true -- Highlight search
 vim.o.termguicolors = true -- Enable 24-bit RGB colors
-vim.cmd('colorscheme OceanicNext') -- Theme
 
 -- Key Mappings
 vim.api.nvim_set_keymap('n', '-', ':NERDTreeToggle<CR>', { noremap = true, silent = true }) -- Toggle NERDTree
 vim.api.nvim_set_keymap('n', '<S-CR>', ':FZF<CR>', { noremap = true, silent = true }) -- Open FZF
-vim.api.nvim_set_keymap('n', '<leader>m', ':mksession! /tmp/vim_session.vim<CR><C-w>o', { noremap = true, silent = true }) -- Save session
-vim.api.nvim_set_keymap('n', '<leader>r', ':source /tmp/vim_session.vim<CR>', { noremap = true, silent = true }) -- Reload session
-vim.api.nvim_set_keymap('n', '<leader>\\', ':Commentary<CR>', { noremap = true, silent = true }) -- Commenting
-vim.api.nvim_set_keymap('n', '<leader>c', ':w !pbcopy<CR>', { noremap = true, silent = true }) -- Copy buffer to clipboard
-vim.api.nvim_set_keymap('v', '<leader>c', ':w !pbcopy<CR>', { noremap = true, silent = true }) -- Copy buffer to clipboard
 
--- Language-Specific Settings
-
--- Ruby
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = { 'ruby', 'eruby' },
-  callback = function()
-    vim.opt_local.expandtab = true
-    vim.opt_local.shiftwidth = 2
-    vim.opt_local.tabstop = 2
-    vim.opt_local.commentstring = '# %s'
-  end,
-})
-
--- TypeScript
-vim.g.coc_global_extensions = { 'coc-tsserver' }
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = 'typescript',
-  callback = function()
-    vim.opt_local.expandtab = true
-    vim.opt_local.shiftwidth = 2
-    vim.opt_local.tabstop = 2
-  end,
-})
-
--- Coc Key Bindings
+-- Coc
+vim.g.coc_global_extensions = { 'coc-tsserver', 'coc-solargraph' }
+vim.api.nvim_set_var("coc_root_patterns", {".git", "tsconfig.json", "package.json"})
 vim.api.nvim_set_keymap('n', '<leader>ac', '<Plug>(coc-codeaction)', { noremap = false, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>qf', '<Plug>(coc-fix-current)', { noremap = false, silent = true })
 vim.api.nvim_set_keymap('n', 'gd', '<Plug>(coc-definition)', { noremap = false, silent = true })
@@ -79,7 +88,6 @@ vim.api.nvim_set_keymap('n', 'gy', '<Plug>(coc-type-definition)', { noremap = fa
 vim.api.nvim_set_keymap('n', 'gi', '<Plug>(coc-implementation)', { noremap = false, silent = true })
 vim.api.nvim_set_keymap('n', 'gr', '<Plug>(coc-references)', { noremap = false, silent = true })
 
--- Coc Completion Menu
 vim.api.nvim_set_keymap(
   'i',
   '<Tab>',
@@ -111,3 +119,9 @@ vim.g.fzf_action = {
   ['ctrl-x'] = 'split',
   ['ctrl-v'] = 'vsplit',
 }
+
+require('keymaps')
+require('commands')
+require('ruby')
+require('typescript')
+
