@@ -17,6 +17,7 @@
     "includeAutomaticOptionalChainCompletions": true
   },
   "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": true,
+	"html.autoClosingTags": true,
 
 	// ruby
   "solargraph.useBundler": false,
@@ -29,5 +30,7 @@
   "solargraph.references": true,
   "solargraph.rename": true,
   "solargraph.transport": "stdio",
-  "snippets.ultisnips.pythonPrompt": false
+  "snippets.ultisnips.pythonPrompt": false,
+
+	"editor.formatOnSave": true,
 }

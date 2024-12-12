@@ -62,4 +62,3 @@ end
 vim.api.nvim_create_user_command("Rc", function(opts)
   create_react_component(opts.args)
 end, { nargs = "?" })
-
