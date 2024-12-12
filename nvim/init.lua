@@ -25,7 +25,36 @@ require('packer').startup(function(use)
 		requires = { 'nvim-lua/plenary.nvim' }
 	}
 	use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
-  use 'preservim/nerdtree'
+	use {
+		'nvim-tree/nvim-tree.lua',
+		config = function()
+			vim.g.loaded_netrw = 1
+			vim.g.loaded_netrwPlugin = 1
+
+			vim.opt.termguicolors = true
+
+			require("nvim-tree").setup({
+				sort = {
+					sorter = "case_sensitive",
+				},
+				view = {
+					width = 30,
+				},
+				renderer = {
+					group_empty = true,
+				},
+				filters = {
+					dotfiles = false,
+				},
+				git = {
+					ignore = false
+				},
+			})
+		end,
+		requires = {
+			'nvim-tree/nvim-web-devicons',
+		},
+	}
   use 'christoomey/vim-tmux-navigator'
   use 'tpope/vim-commentary'
   use 'sainnhe/everforest'
@@ -59,9 +88,6 @@ require('packer').startup(function(use)
 			}
 		end,
 	}
-
-
-
   if packer_bootstrap then
     require('packer').sync()
   end
@@ -120,25 +146,6 @@ end
 vim.o.number = true -- Line numbers
 vim.o.hlsearch = true -- Highlight search
 vim.o.termguicolors = true -- Enable 24-bit RGB colors
-
--- Function to toggle NERDTree in the current file's directory
-function _G.toggle_nerdtree_in_current_dir()
-  -- Check if NERDTree is already open
-  if vim.fn.exists("t:NERDTreeBufName") == 1 and vim.fn.bufwinnr(vim.g.NERDTreeBufName) ~= -1 then
-    vim.cmd("NERDTreeClose")
-  else
-    -- Open NERDTree in the directory of the current file
-    local current_file = vim.fn.expand("%:p")
-    if current_file ~= "" then
-      vim.cmd("NERDTree " .. vim.fn.fnamemodify(current_file, ":p:h"))
-    else
-      vim.cmd("NERDTree")
-    end
-  end
-end
-
--- Map a keybinding for toggling NERDTree
-vim.api.nvim_set_keymap("n", "-", ":lua toggle_nerdtree_in_current_dir()<CR>", { noremap = true, silent = true })
 
 -- Coc
 vim.g.coc_global_extensions = { 'coc-tsserver', 'coc-solargraph' }
@@ -232,3 +239,4 @@ require('keymaps')
 require('commands')
 require('ruby')
 require('typescript')
+require('plugins.nvim-tree')

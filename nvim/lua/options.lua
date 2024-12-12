@@ -16,3 +16,14 @@ vim.opt.hlsearch = false
 vim.opt.incsearch = true
 
 vim.opt.wrap = false
+
+-- Default colorcolumn for all files
+vim.opt.colorcolumn = "120"
+
+-- Set colorcolumn for Ruby files
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "ruby",
+  callback = function()
+    vim.opt_local.colorcolumn = "100"
+  end,
+})
