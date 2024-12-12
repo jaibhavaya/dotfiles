@@ -1,0 +1,17 @@
+# Ignore plugin files installed by package manager
+pack/*
+plugin/*
+after/*
+colors/*
+
+# Ignore session files
+session/*
+
+# Ignore swap files, undo files, and backup files
+*.swp
+*.swo
+*.un~
+*.bak
+
+# Ignore cache files
+cache/*
