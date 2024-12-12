@@ -63,3 +63,31 @@ end
 vim.api.nvim_create_user_command("Rc", function(opts)
   create_react_component(opts.args)
 end, { nargs = "?" })
+
+local function create_scratch_file(extension)
+  -- Generate a unique filename
+  local unique_name = tostring(math.random(100000000, 999999999))
+  local file_extension = extension or ".txt"
+  local file_name = unique_name .. file_extension
+  local file_path = "/tmp/" .. file_name
+
+  -- Create the file (empty)
+  local file = io.open(file_path, "w")
+  if file then
+    file:close()
+  else
+    vim.api.nvim_err_writeln("Failed to create scratch file: " .. file_path)
+    return
+  end
+
+  -- Open the file in Neovim
+  vim.cmd("edit " .. file_path)
+end
+
+-- Create the :Scr command
+vim.api.nvim_create_user_command("Scr", function(opts)
+  local extension = opts.args ~= "" and opts.args or nil
+  create_scratch_file(extension)
+end, {
+  nargs = "?",
+})
