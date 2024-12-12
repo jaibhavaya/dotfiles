@@ -5,6 +5,7 @@ vim.opt.softtabstop = 2
 
 vim.opt.number = true
 vim.opt.relativenumber = true
+vim.opt.scrolloff = 8
 
 -- Ensure Packer is installed
 local ensure_packer = function()
@@ -112,8 +113,24 @@ vim.o.number = true -- Line numbers
 vim.o.hlsearch = true -- Highlight search
 vim.o.termguicolors = true -- Enable 24-bit RGB colors
 
--- Key Mappings
-vim.api.nvim_set_keymap('n', '-', ':NERDTreeToggle<CR>', { noremap = true, silent = true })
+-- Function to toggle NERDTree in the current file's directory
+function _G.toggle_nerdtree_in_current_dir()
+  -- Check if NERDTree is already open
+  if vim.fn.exists("t:NERDTreeBufName") == 1 and vim.fn.bufwinnr(vim.g.NERDTreeBufName) ~= -1 then
+    vim.cmd("NERDTreeClose")
+  else
+    -- Open NERDTree in the directory of the current file
+    local current_file = vim.fn.expand("%:p")
+    if current_file ~= "" then
+      vim.cmd("NERDTree " .. vim.fn.fnamemodify(current_file, ":p:h"))
+    else
+      vim.cmd("NERDTree")
+    end
+  end
+end
+
+-- Map a keybinding for toggling NERDTree
+vim.api.nvim_set_keymap("n", "-", ":lua toggle_nerdtree_in_current_dir()<CR>", { noremap = true, silent = true })
 
 -- Coc
 vim.g.coc_global_extensions = { 'coc-tsserver', 'coc-solargraph' }

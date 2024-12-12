@@ -14,3 +14,6 @@ vim.keymap.set('n', '<leader>T', vim.cmd.UndotreeToggle)
 -- replace selection/word with register without overwriting register
 vim.api.nvim_set_keymap('n', '<leader>p', '"_diwP', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('v', '<leader>p', '"_dP', { noremap = true, silent = true })
+
+vim.api.nvim_set_keymap('n', '<C-d>', '<C-d>zz', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<C-u>', '<C-u>zz', { noremap = true, silent = true })
