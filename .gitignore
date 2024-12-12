@@ -1,1 +1,4 @@
-/plugged
+nvim/after/*
+nvim/colors/*
+nvim/pack/*
+nvim/plugin/*
