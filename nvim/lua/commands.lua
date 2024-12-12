@@ -1,6 +1,7 @@
 -- Edit neovim config
 vim.api.nvim_create_user_command('EConfig', function()
-  vim.cmd('e ~/.config/nvim/init.lua')
+  local config_path = vim.fn.stdpath('config')
+  vim.cmd('e ' .. config_path .. '/init.lua')
 end, {})
 
 -- Create new file in current directory
