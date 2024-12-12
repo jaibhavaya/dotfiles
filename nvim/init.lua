@@ -43,8 +43,24 @@ require('packer').startup(function(use)
 		"jaibhavaya/todo-nvim",
 		config = function()
 			require("todo-nvim").setup()
-  end
-}
+		end
+	}
+	use {
+		"folke/which-key.nvim",
+		event = "VimEnter",
+		config = function()
+			-- Set timeout settings
+			vim.o.timeout = true
+			vim.o.timeoutlen = 300 -- Delay in milliseconds
+
+			-- Setup which-key with timeoutlen
+			require("which-key").setup {
+				timeoutlen = 300, -- Ensure consistency with vim.o.timeoutlen
+			}
+		end,
+	}
+
+
 
   if packer_bootstrap then
     require('packer').sync()
