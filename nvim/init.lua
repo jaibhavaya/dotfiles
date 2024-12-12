@@ -1,12 +1,4 @@
--- Tabs
-vim.opt.tabstop = 2
-vim.opt.shiftwidth = 2
-vim.opt.softtabstop = 2
-
-vim.opt.number = true
-vim.opt.relativenumber = true
-vim.opt.scrolloff = 8
-
+require("options")
 -- Ensure Packer is installed
 local ensure_packer = function()
   local fn = vim.fn
