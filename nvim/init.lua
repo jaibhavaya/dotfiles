@@ -218,9 +218,11 @@ vim.api.nvim_set_keymap('n', '<leader>gB', ':Git blame<CR>', { noremap = true, s
 -- Import Harpoon
 local mark = require('harpoon.mark')
 local ui = require('harpoon.ui')
+require('harpoon').setup({ menu = { width = 100 }})
 
 -- Add the current file to Harpoon
 vim.api.nvim_set_keymap('n', '<leader>ha', ':lua require("harpoon.mark").add_file()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>hr', ':lua require("harpoon.mark").rm_file()<CR>', { noremap = true, silent = true })
 
 -- Toggle the Harpoon menu
 vim.api.nvim_set_keymap('n', '<leader>hm', ':lua require("harpoon.ui").toggle_quick_menu()<CR>', { noremap = true, silent = true })
