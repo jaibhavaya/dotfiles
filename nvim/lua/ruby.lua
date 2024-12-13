@@ -28,6 +28,8 @@ vim.keymap.set("n", "<leader>rt", function()
     local file = vim.fn.expand("%")
     -- Run `bundle exec rspec` for the current file
     vim.cmd("terminal echo 'running " .. file .. " ¯\\_(ツ)_/¯\\n'; bundle exec rspec " .. file)
+		vim.cmd("startinsert")
+		vim.api.nvim_buf_set_keymap(0, "t", "<CR>", [[<C-\><C-n>:bd!<CR>]], { noremap = true, silent = true })
 end, { desc = "Run bundle exec rspec on the current file" })
 
 vim.keymap.set("n", "<leader>rl", function()
@@ -36,4 +38,6 @@ vim.keymap.set("n", "<leader>rl", function()
     local line = vim.fn.line(".")
     -- Run `bundle exec rspec` for the current file and line
     vim.cmd("terminal echo 'running " .. file .. ":" .. line .. " ¯\\_(ツ)_/¯\\n'; bundle exec rspec " .. file .. ":" .. line)
+		vim.cmd("startinsert")
+		vim.api.nvim_buf_set_keymap(0, "t", "<CR>", [[<C-\><C-n>:bd!<CR>]], { noremap = true, silent = true })
 end, { desc = "Run bundle exec rspec on the current test line" })
