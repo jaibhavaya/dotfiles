@@ -142,11 +142,6 @@ else
   vim.cmd("colorscheme gruvbox")
 end
 
--- Basic Settings
-vim.o.number = true -- Line numbers
-vim.o.hlsearch = true -- Highlight search
-vim.o.termguicolors = true -- Enable 24-bit RGB colors
-
 -- Coc
 vim.g.coc_global_extensions = { 'coc-tsserver', 'coc-solargraph' }
 vim.api.nvim_set_var("coc_root_patterns", {".git", "tsconfig.json", "package.json"})
