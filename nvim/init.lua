@@ -144,7 +144,6 @@ end
 
 -- Basic Settings
 vim.o.number = true -- Line numbers
-vim.o.hlsearch = true -- Highlight search
 vim.o.termguicolors = true -- Enable 24-bit RGB colors
 
 -- Coc
@@ -223,6 +222,8 @@ require('harpoon').setup({ menu = { width = 100 }})
 -- Add the current file to Harpoon
 vim.api.nvim_set_keymap('n', '<leader>ha', ':lua require("harpoon.mark").add_file()<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>hr', ':lua require("harpoon.mark").rm_file()<CR>', { noremap = true, silent = true })
+vim.keymap.set("n", "<leader>hc", ':lua require("harpoon.mark").clear_all()', { noremap = true, silent = true })
+
 
 -- Toggle the Harpoon menu
 vim.api.nvim_set_keymap('n', '<leader>hm', ':lua require("harpoon.ui").toggle_quick_menu()<CR>', { noremap = true, silent = true })

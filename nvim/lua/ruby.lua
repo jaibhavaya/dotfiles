@@ -29,7 +29,16 @@ vim.keymap.set("n", "<leader>rt", function()
     -- Run `bundle exec rspec` for the current file
     vim.cmd("terminal echo 'running " .. file .. " ¯\\_(ツ)_/¯\\n'; bundle exec rspec " .. file)
 		vim.cmd("startinsert")
-		vim.api.nvim_buf_set_keymap(0, "t", "<CR>", [[<C-\><C-n>:bd!<CR>]], { noremap = true, silent = true })
+		  -- Listen for the terminal job to finish
+		vim.api.nvim_create_autocmd("TermClose", {
+			buffer = 0, -- Current buffer
+			callback = function()
+				-- Add a keymap for <Enter> to close the buffer only after the process ends
+				vim.api.nvim_buf_set_keymap(0, "t", "<CR>", [[<C-\><C-n>:bd!<CR>]], { noremap = true, silent = true })
+				-- Print a message in the command line
+				vim.cmd("echo 'Press Enter to close the test buffer'")
+			end,
+		})
 end, { desc = "Run bundle exec rspec on the current file" })
 
 vim.keymap.set("n", "<leader>rl", function()
@@ -39,5 +48,13 @@ vim.keymap.set("n", "<leader>rl", function()
     -- Run `bundle exec rspec` for the current file and line
     vim.cmd("terminal echo 'running " .. file .. ":" .. line .. " ¯\\_(ツ)_/¯\\n'; bundle exec rspec " .. file .. ":" .. line)
 		vim.cmd("startinsert")
-		vim.api.nvim_buf_set_keymap(0, "t", "<CR>", [[<C-\><C-n>:bd!<CR>]], { noremap = true, silent = true })
+		vim.api.nvim_create_autocmd("TermClose", {
+			buffer = 0, -- Current buffer
+			callback = function()
+				-- Add a keymap for <Enter> to close the buffer only after the process ends
+				vim.api.nvim_buf_set_keymap(0, "t", "<CR>", [[<C-\><C-n>:bd!<CR>]], { noremap = true, silent = true })
+				-- Print a message in the command line
+				vim.cmd("echo 'Press Enter to close the test buffer'")
+			end,
+		})
 end, { desc = "Run bundle exec rspec on the current test line" })
