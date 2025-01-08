@@ -16,6 +16,17 @@ local packer_bootstrap = ensure_packer()
 -- Initialize Packer and Plugins
 require('packer').startup(function(use)
 	use 'wbthomason/packer.nvim' -- Packer manages itself
+
+	-- LSP
+	use 'neovim/nvim-lspconfig'
+	use 'hrsh7th/nvim-cmp'          -- The completion plugin
+	use 'hrsh7th/cmp-nvim-lsp'      -- LSP source for nvim-cmp
+	use 'hrsh7th/cmp-buffer'        -- Buffer completions
+	use 'hrsh7th/cmp-path'          -- Path completions
+	use 'hrsh7th/cmp-cmdline'       -- Cmdline completions
+	use 'L3MON4D3/LuaSnip'          -- Snippet engine
+	use 'saadparwaiz1/cmp_luasnip'  -- Snippet completions
+
   use 'tpope/vim-sensible'
   use 'vim-ruby/vim-ruby'
   use 'tpope/vim-rails'
@@ -62,7 +73,6 @@ require('packer').startup(function(use)
 	use "tpope/vim-endwise"
 	use 'lewis6991/gitsigns.nvim'
 	use 'github/copilot.vim'
-  use { 'neoclide/coc.nvim', branch = 'release' }
 	use 'ThePrimeagen/vim-be-good'
 	use 'mbbill/undotree'
 	use 'nvim-treesitter/nvim-treesitter-context'
@@ -158,45 +168,13 @@ require'treesitter-context'.setup{
 vim.g.copilot_no_tab_map = true
 vim.api.nvim_set_keymap("i", "<A-Tab>", "copilot#Accept('<CR>')", { silent = true, expr = true })
 
--- Detect the current directory and set the colorscheme accordingly
-local cwd = vim.fn.getcwd()
+-- Set the background to light
+vim.opt.background = "dark"
 
-if cwd:match("boost%-client") then
-  -- Enable termguicolors if available
-  if vim.fn.has("termguicolors") == 1 then
-    vim.opt.termguicolors = true
-  end
-
-  -- Set background to dark or light
-  vim.opt.background = "dark" -- Use "light" for light version
-
-  -- Set contrast for Everforest
-  -- Available values: 'hard', 'medium' (default), 'soft'
-  vim.g.everforest_background = "hard"
-
-  -- Enable better performance for Everforest
-  vim.g.everforest_better_performance = 1
-  -- Apply the Everforest colorscheme
-  vim.cmd("colorscheme everforest")
-else
-  -- Set the background to light
-  vim.opt.background = "dark"
-
-  -- Customize Gruvbox options
-  vim.g.gruvbox_contrast_light = "hard" -- Available values: 'hard', 'medium', 'soft' (default)
-  vim.g.gruvbox_invert_selection = false -- Prevents inverted selection for better readability
-  vim.cmd("colorscheme gruvbox")
-end
-
--- Coc
-vim.g.coc_global_extensions = { 'coc-tsserver', 'coc-solargraph' }
-vim.api.nvim_set_var("coc_root_patterns", {".git", "tsconfig.json", "package.json"})
-vim.api.nvim_set_keymap('n', '<leader>ac', '<Plug>(coc-codeaction)', { noremap = false, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>qf', '<Plug>(coc-fix-current)', { noremap = false, silent = true })
-vim.api.nvim_set_keymap('n', 'gd', '<Plug>(coc-definition)', { noremap = false, silent = true })
-vim.api.nvim_set_keymap('n', 'gy', '<Plug>(coc-type-definition)', { noremap = false, silent = true })
-vim.api.nvim_set_keymap('n', 'gi', '<Plug>(coc-implementation)', { noremap = false, silent = true })
-vim.api.nvim_set_keymap('n', 'gr', '<Plug>(coc-references)', { noremap = false, silent = true })
+-- Customize Gruvbox options
+vim.g.gruvbox_contrast_light = "hard" -- Available values: 'hard', 'medium', 'soft' (default)
+vim.g.gruvbox_invert_selection = false -- Prevents inverted selection for better readability
+vim.cmd("colorscheme gruvbox")
 
 vim.api.nvim_set_keymap(
   'i',
@@ -208,18 +186,6 @@ vim.api.nvim_set_keymap(
   'i',
   '<S-Tab>',
   'pumvisible() ? "\\<C-p>" : "\\<S-Tab>"',
-  { noremap = true, expr = true, silent = true }
-)
-vim.api.nvim_set_keymap(
-  'i',
-  '<CR>',
-  'pumvisible() ? coc#pum#confirm() : "\\<CR>"',
-  { noremap = true, expr = true, silent = true }
-)
-vim.api.nvim_set_keymap(
-  'i',
-  '<Esc>',
-  'pumvisible() ? coc#pum#cancel() : "\\<Esc>"',
   { noremap = true, expr = true, silent = true }
 )
 
@@ -264,7 +230,7 @@ require('harpoon').setup({ menu = { width = 100 }})
 -- Add the current file to Harpoon
 vim.api.nvim_set_keymap('n', '<leader>ha', ':lua require("harpoon.mark").add_file()<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>hr', ':lua require("harpoon.mark").rm_file()<CR>', { noremap = true, silent = true })
-vim.keymap.set("n", "<leader>hc", ':lua require("harpoon.mark").clear_all()', { noremap = true, silent = true })
+vim.keymap.set("n", "<leader>hc", ':lua require("harpoon.mark").clear_all()<CR>', { noremap = true, silent = true })
 
 
 -- Toggle the Harpoon menu
@@ -280,8 +246,42 @@ vim.api.nvim_set_keymap('n', '<leader>h4', ':lua require("harpoon.ui").nav_file(
 vim.api.nvim_set_keymap('n', '<leader>hn', ':lua require("harpoon.ui").nav_next()<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>hp', ':lua require("harpoon.ui").nav_prev()<CR>', { noremap = true, silent = true })
 
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+  callback = function()
+    vim.lsp.buf.format = function() end
+  end,
+})
+
+-- nvim-cmp setup
+local cmp = require('cmp')
+
+cmp.setup({
+  snippet = {
+    -- REQUIRED - you must specify a snippet engine
+    expand = function(args)
+      require('luasnip').lsp_expand(args.body)
+    end,
+  },
+  mapping = cmp.mapping.preset.insert({
+    -- example mappings
+    ['<C-n>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
+    ['<C-p>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
+    ['<C-y>'] = cmp.mapping.confirm({ select = true }),
+  }),
+  sources = cmp.config.sources({
+    { name = 'nvim_lsp' },
+    { name = 'luasnip' },
+    -- more sources
+  }, {
+    { name = 'buffer' },
+    { name = 'path' },
+  }),
+})
+
 require('keymaps')
 require('commands')
 require('ruby')
 require('typescript')
+require('lsp')
 require('plugins.nvim-tree')

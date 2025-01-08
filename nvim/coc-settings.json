@@ -4,11 +4,11 @@
   "pairs.disableInComments": true,
   "pairs.enableBackspace": true,
 	// typescript
-  "typescript.suggest.autoImports": true,
-  "coc.preferences.formatOnSaveFiletypes": ["typescript", "typescriptreact"],
-  "eslint.autoFixOnSave": true,
   "eslint.enable": true,
+  "eslint.autoFixOnSave": true,
   "eslint.filetypes": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+	"coc.preferences.formatOnSaveFiletypes": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+  "typescript.suggest.autoImports": true,
   "typescript.preferences": {
     "importModuleSpecifier": "non-relative",
     "importModuleSpecifierEnding": "minimal",
