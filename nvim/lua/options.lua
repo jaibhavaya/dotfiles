@@ -15,6 +15,7 @@ vim.opt.smartcase = true
 vim.opt.hlsearch = false
 vim.opt.incsearch = true
 vim.o.termguicolors = true -- Enable 24-bit RGB colors
+vim.o.cursorline = true
 
 vim.opt.wrap = false
 

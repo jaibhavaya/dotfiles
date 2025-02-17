@@ -17,3 +17,13 @@ vim.api.nvim_set_keymap('v', '<leader>p', '"_dP', { noremap = true, silent = tru
 
 vim.api.nvim_set_keymap('n', '<C-d>', '<C-d>zz', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<C-u>', '<C-u>zz', { noremap = true, silent = true })
+
+-- Close all unmodified buffers except the current one
+vim.keymap.set("n", "<leader>bc", function()
+  local current_buf = vim.api.nvim_get_current_buf() -- Get the current buffer ID
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if buf ~= current_buf and vim.api.nvim_buf_is_loaded(buf) and not vim.bo[buf].modified then
+      vim.cmd("bdelete " .. buf)
+    end
+  end
+end, { desc = "Close all unmodified buffers except the current one" })

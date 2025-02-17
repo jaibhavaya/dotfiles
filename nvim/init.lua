@@ -26,6 +26,7 @@ require('packer').startup(function(use)
 	use 'hrsh7th/cmp-cmdline'       -- Cmdline completions
 	use 'L3MON4D3/LuaSnip'          -- Snippet engine
 	use 'saadparwaiz1/cmp_luasnip'  -- Snippet completions
+	use 'tommcdo/vim-exchange'
 
   use 'tpope/vim-sensible'
   use 'vim-ruby/vim-ruby'
@@ -72,9 +73,6 @@ require('packer').startup(function(use)
   use 'morhetz/gruvbox'
 	use "tpope/vim-endwise"
 	use 'lewis6991/gitsigns.nvim'
-	use 'github/copilot.vim'
-	use 'ThePrimeagen/vim-be-good'
-	use 'mbbill/undotree'
 	use 'nvim-treesitter/nvim-treesitter-context'
 	use 'nvim-treesitter/nvim-treesitter'
 	use 'ThePrimeagen/harpoon'
@@ -102,6 +100,34 @@ require('packer').startup(function(use)
 		'nvim-lualine/lualine.nvim',
 		requires = { 'nvim-tree/nvim-web-devicons', opt = true }
 	}
+	use {
+		"SunnyTamang/select-undo.nvim",
+		config = function()
+			require("select-undo").setup()
+		end
+	}
+
+	-- Required for avante
+  use 'stevearc/dressing.nvim'
+  use 'MunifTanjim/nui.nvim'
+  use 'MeanderingProgrammer/render-markdown.nvim'
+
+  -- Optional dependencies
+  use 'HakonHarnes/img-clip.nvim'
+  use 'zbirenbaum/copilot.lua'
+
+  use {
+    'yetone/avante.nvim',
+    branch = 'main',
+    run = 'make',
+    config = function()
+      require('avante_lib').load()
+      require('avante').setup()
+    end
+  }
+
+	use 'rachartier/tiny-glimmer.nvim'
+
   if packer_bootstrap then
     require('packer').sync()
   end

@@ -1,21 +1,14 @@
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 local lspconfig = require('lspconfig')
 
--- Common on_attach function to set up keybindings once an LSP attaches to a buffer
-local on_attach = function(client, bufnr)
-  -- etc.
-end
-
--- In your on_attach function or wherever you set LSP mappings:
 local on_attach = function(client, bufnr)
   local opts = { noremap=true, silent=true, buffer=bufnr }
-
-  -- Other keymaps like go-to-def, etc.
 
   vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, opts)
   vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
   vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
   vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
+	vim.keymap.set('n', '<leader>ce', vim.diagnostic.open_float, opts)
 end
 
 lspconfig.eslint.setup({
@@ -26,7 +19,11 @@ lspconfig.eslint.setup({
 lspconfig.ts_ls.setup({
   on_attach = on_attach,
 	capabilities = capabilities,
-  -- ...
+	init_options = {
+    preferences = {
+      importModuleSpecifierPreference = "non-relative", -- Use non-relative imports
+    }
+  }
 })
 lspconfig.solargraph.setup({
   on_attach = on_attach,
@@ -79,7 +76,6 @@ cmp.setup({
   }),
 })
 
--- Somewhere in your Neovim config (init.lua or a separate file):
 vim.api.nvim_create_autocmd("BufWritePre", {
   pattern = { "*.js", "*.ts", "*.jsx", "*.tsx" },
   callback = function()
