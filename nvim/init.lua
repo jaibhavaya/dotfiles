@@ -126,8 +126,6 @@ require('packer').startup(function(use)
     end
   }
 
-	use 'rachartier/tiny-glimmer.nvim'
-
   if packer_bootstrap then
     require('packer').sync()
   end
@@ -235,6 +233,9 @@ vim.api.nvim_set_keymap('n', '<leader>gb', ':Telescope git_branches<CR>', { nore
 require('telescope').load_extension('fzf')
 
 vim.api.nvim_set_keymap('n', '<leader>ff', ':Telescope find_files<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>fr', ':Telescope resume<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>fbi', ':Telescope builtin<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>fc', ':Telescope current_buffer_fuzzy_find<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>fg', ':Telescope live_grep<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>fb', ':Telescope buffers<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>fh', ':Telescope oldfiles<CR>', { noremap = true, silent = true })
