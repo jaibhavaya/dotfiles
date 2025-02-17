@@ -91,3 +91,45 @@ vim.api.nvim_create_user_command("Scr", function(opts)
 end, {
   nargs = "?",
 })
+
+vim.api.nvim_create_user_command("NextColumn", function(opts)
+    require("csvview.jump").next_field_start()
+end, {
+    nargs = "?",
+})
+
+vim.api.nvim_create_user_command("PrevColumn", function(opts)
+    require("csvview.jump").prev_field_start()
+end, {
+    nargs = "?",
+})
+
+-- Enable csvview only once when filetype is set
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "csv",
+    desc = "Enable CSV View on .csv files",
+    callback = function()
+        require("csvview").enable()
+    end,
+})
+
+-- Manage keymaps when entering/leaving CSV buffers
+vim.api.nvim_create_autocmd("BufEnter", {
+    pattern = "*.csv",
+    desc = "Set CSV keymaps when entering CSV files",
+    callback = function()
+        local bufnr = vim.api.nvim_get_current_buf()
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', 'w', ':NextColumn<CR>', { noremap = true, silent = true })
+        vim.api.nvim_buf_set_keymap(bufnr, 'n', 'b', ':PrevColumn<CR>', { noremap = true, silent = true })
+    end,
+})
+
+vim.api.nvim_create_autocmd("BufLeave", {
+    pattern = "*.csv",
+    desc = "Remove CSV keymaps when leaving CSV files",
+    callback = function()
+        local bufnr = vim.api.nvim_get_current_buf()
+        pcall(vim.api.nvim_buf_del_keymap, bufnr, 'n', 'w')
+        pcall(vim.api.nvim_buf_del_keymap, bufnr, 'n', 'b')
+    end,
+})

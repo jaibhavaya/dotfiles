@@ -126,6 +126,17 @@ require('packer').startup(function(use)
     end
   }
 
+	use {
+		'hat0uma/csvview.nvim',
+		config = function()
+			require('csvview').setup({
+				view = {
+					display_mode = "border"
+				}
+			})
+		end
+	}
+
   if packer_bootstrap then
     require('packer').sync()
   end
