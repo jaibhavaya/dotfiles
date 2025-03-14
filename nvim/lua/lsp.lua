@@ -1,7 +1,7 @@
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 local lspconfig = require('lspconfig')
 
-local on_attach = function(client, bufnr)
+_G.on_attach = function(client, bufnr)
   local opts = { noremap=true, silent=true, buffer=bufnr }
 
   vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, opts)

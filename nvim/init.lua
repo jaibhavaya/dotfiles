@@ -137,6 +137,17 @@ require('packer').startup(function(use)
 		end
 	}
 
+	use 'jose-elias-alvarez/null-ls.nvim'
+	use {
+		'simrat39/rust-tools.nvim',
+		requires = {
+			'neovim/nvim-lspconfig',
+			'nvim-lua/plenary.nvim',
+			'mfussenegger/nvim-dap',  -- Optional, for debugging
+		}
+	}
+	use 'saecki/crates.nvim'
+
   if packer_bootstrap then
     require('packer').sync()
   end
@@ -323,3 +334,4 @@ require('ruby')
 require('typescript')
 require('lsp')
 require('plugins.nvim-tree')
+require('rust')
