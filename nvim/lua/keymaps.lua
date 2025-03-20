@@ -27,3 +27,20 @@ vim.keymap.set("n", "<leader>bc", function()
     end
   end
 end, { desc = "Close all unmodified buffers except the current one" })
+
+vim.keymap.set('n', '<leader>uu', ':e!<CR>', { noremap = true, silent = true, desc = 'Reload buffer discarding changes' })
+vim.keymap.set('n', '<leader>s',':wa<CR>', { noremap = true, silent = true, desc = 'Reload buffer discarding changes' })
+
+-- Initialize Go DAP setup (after your other require statements)
+require('dap-go').setup()
+require('dapui').setup()
+
+-- Debugging keymaps
+vim.keymap.set('n', '<leader>db', function() require('dap').toggle_breakpoint() end)
+vim.keymap.set('n', '<leader>dc', function() require('dap').continue() end)
+vim.keymap.set('n', '<leader>do', function() require('dapui').open() end)
+vim.keymap.set('n', '<leader>dx', function() require('dapui').close() end)
+
+-- Telescope for Go
+vim.keymap.set('n', '<leader>gfs', '<cmd>Telescope lsp_document_symbols<CR>')
+vim.keymap.set('n', '<leader>gws', '<cmd>Telescope lsp_workspace_symbols<CR>')

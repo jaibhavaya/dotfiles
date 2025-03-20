@@ -31,7 +31,13 @@ require('packer').startup(function(use)
   use 'tpope/vim-sensible'
   use 'vim-ruby/vim-ruby'
   use 'tpope/vim-rails'
-  use 'tpope/vim-fugitive'
+	
+	-- Go development
+	use 'nvim-neotest/nvim-nio'
+	use 'fatih/vim-go'                   -- Comprehensive Go support (optional with LSP, but has useful features)
+	use 'leoluz/nvim-dap-go'             -- Debugging support for Go
+	use 'mfussenegger/nvim-dap'          -- Debug Adapter Protocol
+	use 'rcarriga/nvim-dap-ui'           -- UI for DAP
 	use {
 		'nvim-telescope/telescope.nvim',
 		requires = { 'nvim-lua/plenary.nvim' }
@@ -50,7 +56,7 @@ require('packer').startup(function(use)
 					sorter = "case_sensitive",
 				},
 				view = {
-					width = 30,
+					width = 60,
 				},
 				renderer = {
 					group_empty = true,
@@ -114,17 +120,45 @@ require('packer').startup(function(use)
 
   -- Optional dependencies
   use 'HakonHarnes/img-clip.nvim'
-  use 'zbirenbaum/copilot.lua'
-
+  
+  -- Copilot setup
   use {
-    'yetone/avante.nvim',
-    branch = 'main',
-    run = 'make',
+    'zbirenbaum/copilot.lua',
+    event = 'InsertEnter',
     config = function()
-      require('avante_lib').load()
-      require('avante').setup()
+      require('copilot').setup({
+        suggestion = { enabled = false },
+        panel = { enabled = false },
+      })
     end
   }
+  
+  use {
+    'zbirenbaum/copilot-cmp',
+    after = { 'copilot.lua', 'nvim-cmp' },
+    config = function()
+      require('copilot_cmp').setup()
+    end
+  }
+
+	use {
+		'yetone/avante.nvim',
+		branch = 'main',
+		run = 'make',
+		config = function()
+			require('avante_lib').load()
+			require('avante').setup({
+
+				provider = "claude",
+				anthropic = {
+					model = "claude-3-7-sonnet-20250219",
+					timeout = 30000,
+					temperature = 0,
+					max_tokens = 4096,
+				}
+			})
+		end
+	}
 
 	use {
 		'hat0uma/csvview.nvim',
@@ -134,6 +168,47 @@ require('packer').startup(function(use)
 					display_mode = "border"
 				}
 			})
+		end
+	}
+	use({
+		"kylechui/nvim-surround",
+		tag = "*", -- Use for stability; omit to use `main` branch for the latest features
+		config = function()
+			require("nvim-surround").setup({
+				-- Configuration here, or leave empty to use defaults
+			})
+		end
+	})
+ 
+	use {
+		"windwp/nvim-autopairs",
+		config = function()
+			require("nvim-autopairs").setup({
+				check_ts = true, -- Enable treesitter
+				ts_config = {
+					lua = {'string'},-- Don't add pairs in lua string treesitter nodes
+					javascript = {'template_string'}, -- Don't add pairs in javascript template_string
+				},
+				disable_filetype = { "TelescopePrompt" },
+				fast_wrap = {
+					map = '<M-e>',
+					chars = { '{', '[', '(', '"', "'" },
+					pattern = string.gsub([[ [%'%"%)%>%]%)%}%,] ]], '%s+', ''),
+					end_key = '$',
+					keys = 'qwertyuiopzxcvbnmasdfghjkl',
+					check_comma = true,
+					highlight = 'Search',
+					highlight_grey='Comment'
+				},
+			})
+
+			-- Integration with nvim-cmp
+			local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+			local cmp = require('cmp')
+			cmp.event:on(
+				'confirm_done',
+				cmp_autopairs.on_confirm_done()
+			)
 		end
 	}
 
@@ -211,8 +286,7 @@ require'treesitter-context'.setup{
   on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
 }
 
-vim.g.copilot_no_tab_map = true
-vim.api.nvim_set_keymap("i", "<A-Tab>", "copilot#Accept('<CR>')", { silent = true, expr = true })
+-- Removed old Copilot configuration as we're now using copilot.lua with copilot-cmp
 
 -- Set the background to light
 vim.opt.background = "dark"
@@ -260,7 +334,9 @@ vim.api.nvim_set_keymap('n', '<leader>fbi', ':Telescope builtin<CR>', { noremap 
 vim.api.nvim_set_keymap('n', '<leader>fc', ':Telescope current_buffer_fuzzy_find<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>fg', ':Telescope live_grep<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>fb', ':Telescope buffers<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>fh', ':Telescope oldfiles<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>fo', ':Telescope oldfiles<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>fw', ':Telescope grep_string<CR>', { desc = '[S]earch current [W]ord' })
+
 
 -- git
 vim.api.nvim_set_keymap('n', '<leader>gs', ':G<CR>', { noremap = true, silent = true })
@@ -269,6 +345,15 @@ vim.api.nvim_set_keymap('n', '<leader>gc', ':Git commit<CR>', { noremap = true, 
 vim.api.nvim_set_keymap('n', '<leader>gp', ':Git push<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>gl', ':Git pull<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>gB', ':Git blame<CR>', { noremap = true, silent = true })
+
+require("cmp").setup {
+  sources = {
+    { name = "copilot" },
+    { name = "nvim_lsp" },
+    { name = "luasnip" },
+    -- other sources
+  },
+}
 
 -- harpoon
 -- Import Harpoon
@@ -319,6 +404,7 @@ cmp.setup({
     ['<C-y>'] = cmp.mapping.confirm({ select = true }),
   }),
   sources = cmp.config.sources({
+    { name = 'copilot' },
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
     -- more sources

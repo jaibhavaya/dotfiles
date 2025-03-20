@@ -57,10 +57,15 @@ require('crates').setup({
   },
 })
 
--- Format Rust files on save (optional)
+-- Format Rust files on save with custom formatting options
 vim.api.nvim_create_autocmd("BufWritePre", {
   pattern = { "*.rs" },
   callback = function()
-    vim.lsp.buf.format({ async = false })
+    -- Use rust-tools formatting if available, otherwise fall back to standard LSP formatting
+    if rt.formatting and rt.formatting.format then
+      rt.formatting.format()
+    else
+      vim.lsp.buf.format({ async = false })
+    end
   end,
 })
