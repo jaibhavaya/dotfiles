@@ -31,7 +31,7 @@ require('packer').startup(function(use)
   use 'tpope/vim-sensible'
   use 'vim-ruby/vim-ruby'
   use 'tpope/vim-rails'
-	
+
 	-- Go development
 	use 'nvim-neotest/nvim-nio'
 	use 'fatih/vim-go'                   -- Comprehensive Go support (optional with LSP, but has useful features)
@@ -120,7 +120,7 @@ require('packer').startup(function(use)
 
   -- Optional dependencies
   use 'HakonHarnes/img-clip.nvim'
-  
+
   -- Copilot setup
   use {
     'zbirenbaum/copilot.lua',
@@ -132,7 +132,7 @@ require('packer').startup(function(use)
       })
     end
   }
-  
+
   use {
     'zbirenbaum/copilot-cmp',
     after = { 'copilot.lua', 'nvim-cmp' },
@@ -179,7 +179,7 @@ require('packer').startup(function(use)
 			})
 		end
 	})
- 
+
 	use {
 		"windwp/nvim-autopairs",
 		config = function()
@@ -222,6 +222,16 @@ require('packer').startup(function(use)
 		}
 	}
 	use 'saecki/crates.nvim'
+
+	use {
+		'greggh/claude-code.nvim',
+		requires = {
+			'nvim-lua/plenary.nvim', -- Required for git operations
+		},
+		config = function()
+			require('claude-code').setup()
+		end
+	}
 
   if packer_bootstrap then
     require('packer').sync()
@@ -313,8 +323,8 @@ require('telescope').setup{
   defaults = {
     mappings = {
       i = {
-        ["<C-j>"] = require('telescope.actions').move_selection_next, 
-        ["<C-k>"] = require('telescope.actions').move_selection_previous, 
+        ["<C-j>"] = require('telescope.actions').move_selection_next,
+        ["<C-k>"] = require('telescope.actions').move_selection_previous,
         ["<C-q>"] = require('telescope.actions').send_to_qflist + require('telescope.actions').open_qflist,
       },
     },
